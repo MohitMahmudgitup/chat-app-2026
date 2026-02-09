@@ -2,9 +2,6 @@ import mongoose from "mongoose";
 
 export const connectDB = async () => {
     try {
-        console.log("ENV FILE TEST:", process.env.MONGODB_URI);
-
-
         await mongoose.connect(process.env.MONGODB_URI as string);
         console.log("👌MongoDB connected successfully")
 

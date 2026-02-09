@@ -1,6 +1,6 @@
 import "dotenv/config";
-import app from "./src/app"
-import { connectDB } from "./src/config/datebase"
+import app from "./src/app.ts"
+import { connectDB } from "./src/config/datebase.ts";
 const port = process.env.PORT || 3000;
 
 connectDB().then(() => {
