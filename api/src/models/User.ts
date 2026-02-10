@@ -4,7 +4,7 @@ interface IUser extends Document{
     clerkId : String;
     name : String;
     email : String;
-    avatar? : String;
+    avatar : String;
     createdAt : Date;
     updatedAt : Date;
 
