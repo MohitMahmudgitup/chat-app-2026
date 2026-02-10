@@ -35,5 +35,5 @@ const userSchema = new Schema<IUser>({
 },{
     timestamps : true
 }) 
-const userModle : any  = mongoose.model("User" , userSchema )
-export default userModle
+const userModel : any  = mongoose.model("User" , userSchema )
+export default userModel
