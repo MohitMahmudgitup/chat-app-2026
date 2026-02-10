@@ -27,7 +27,7 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
     } catch (error) {
         console.error("getMe error:", error);
         res.status(500)
-        next()
+        next(error)
     }
 };
 export const postMe = async (req: Request, res: Response, next: NextFunction) => {
@@ -66,6 +66,6 @@ export const postMe = async (req: Request, res: Response, next: NextFunction) =>
     } catch (error) {
         console.error("postMe error:", error);
         res.status(500)
-        next()
+        next(error)
     }
 };
