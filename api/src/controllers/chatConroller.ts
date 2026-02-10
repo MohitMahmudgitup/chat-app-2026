@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express"
 import chatModel from "../models/Chat";
-import messageModel from "../models/Message";
+import mongoose from "mongoose";
 export const getAllChat = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
@@ -8,19 +8,23 @@ export const getAllChat = async (req: Request, res: Response, next: NextFunction
 
         const allChats = await chatModel.find({ participants: userId })
             .populate("participants", "name email avatar")
-            .populate("lastMessage")
+            .populate("lastMessage", "text sender createdAt")
             .sort({ lastMessageAt: -1 })
+            .lean();
 
-        const formattedChat = allChats.map((chat: any) => {
+        const formattedChats = allChats.map((chat: any) => {
             const otherParticipant = chat.participants.find((p: any) => p._id.toString() !== userId);
             return {
                 _id: chat._id,
-                participant: otherParticipant,
-                lastMessage: chat.lastMessage,
-                lastMessageAt: chat.lastMessageAt
-            }
+                participant: otherParticipant || null,
+                lastMessage: chat.lastMessage || null,
+                lastMessageAt: chat.lastMessageAt || null,
+            };
         })
-        res.json(formattedChat);
+        return res.status(200).json({
+            success: true,
+            chats: formattedChats,
+        });
 
     } catch (error) {
         res.status(500)
@@ -40,6 +44,24 @@ export const getOrCreateChat = async (req: Request, res: Response, next: NextFun
                 message: "UserId or participantId missing",
             });
         }
+
+        if (userId === participantsId) {
+            return res.status(400).json({
+                success: false,
+                message: "You cannot chat with yourself",
+            });
+        }
+
+        if (
+            !mongoose.Types.ObjectId.isValid(userId) ||
+            !mongoose.Types.ObjectId.isValid(participantsId)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid user id",
+            });
+        }
+
         let chat = await chatModel
             .findOne({
                 isGroupChat: false,
@@ -50,17 +72,20 @@ export const getOrCreateChat = async (req: Request, res: Response, next: NextFun
             .populate("participants", "name email avatar");
 
         if (!chat) {
-            const newChat = new chat({ participants: [userId, participantsId] })
+            const newChat = await chatModel.create({
+                participants: [userId, participantsId],
+            });
             await newChat.save();
             chat = newChat.populate("participants", "name email avatar");
         }
         const otherParticipant = chat.participants.find((p: any) => p._id.toString() !== userId);
-        res.json({
+        return res.status(200).json({
+            success: true,
             _id: chat._id,
-            participant: otherParticipant ?? null,
-            lastMessage: chat.lastMessage,
-            lastMessageAt: chat.lastMessageAt,
-            createAt: chat.createAt
+            participant: otherParticipant || null,
+            lastMessage: chat.lastMessage || null,
+            lastMessageAt: chat.lastMessageAt || null,
+            createdAt: chat.createdAt,
         })
 
 
