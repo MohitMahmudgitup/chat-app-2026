@@ -5,19 +5,19 @@ import messageModel from "../models/Message";
 import userModel from "../models/User";
 import chatModel from "../models/Chat";
 
-interface SocketWithUserId extends Socket {
-    userId: string
-}
 
 // store online users in memory : userId -> socketId
-export const onlineUsers: Map<String, String> = new Map()
+export const onlineUsers: Map<string, string> = new Map()
 
 export const initializeSocket = (httpServer: HttpServer) => {
-    const allowedOrigins: string[] = [
+    const allowedOrigins = [
         "http://localhost:5173",
         "http://localhost:8081",
-        process.env.FRONTEND_URL || ""
-    ];
+    ].filter(Boolean);
+
+    if (process.env.FRONTEND_URL) {
+        allowedOrigins.push(process.env.FRONTEND_URL);
+    }
 
     const io = new SocketServer(httpServer, {
         cors: {
@@ -35,7 +35,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
             const clerkId = session.sub
             const user = await userModel.findOne({ clerkId })
             if (!user) return next(new Error("user not found"));
-            (socket as SocketWithUserId).userId = user._id.toString();
+            socket.data.userId = user._id.toString();
             next()
         } catch (error) {
             next(new Error("Authentication failed"));
@@ -43,7 +43,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
     })
 
     io.on("connection", (socket) => {
-        const userId = (socket as SocketWithUserId).userId;
+        const userId = socket.data.userId;
 
         //send list of currently online users  to the newly connected client
         socket.emit("online-users", { userIds: Array.from(onlineUsers.keys()) })
@@ -58,6 +58,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
         socket.on("join-chat", (chatId: string) => {
             socket.join(`char:${chatId}`)
         })
+
         socket.on("leave-chat", (chatId: string) => {
             socket.leave(`char:${chatId}`)
         })
@@ -81,10 +82,10 @@ export const initializeSocket = (httpServer: HttpServer) => {
                     text
                 })
 
-                chat.lastMessage = messageModel._id;
+                chat.lastMessage = message._id;
                 chat.lastMessageAt = new Date();
                 await chat.save()
-                await message.populate("sender", "name email avatar")
+                await message.populate("sender", "name avatar")
 
                 io.to(`chat:${chatId}`).emit("new-message", message)
 
@@ -102,10 +103,10 @@ export const initializeSocket = (httpServer: HttpServer) => {
         })
 
 
-        socket.on("disconnect",()=>{
+        socket.on("disconnect", () => {
             onlineUsers.delete(userId)
 
-            socket.broadcast.emit("user-offline",{userId});
+            socket.broadcast.emit("user-offline", { userId });
         })
 
     })
