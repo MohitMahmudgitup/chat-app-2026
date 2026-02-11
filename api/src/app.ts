@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import { clerkMiddleware } from '@clerk/express'
 import authRoute from "./routes/authRoute.ts"
 import chatRoute from "./routes/chatRoute.ts"
@@ -18,5 +19,18 @@ app.use("/api/message", messageRoute)
 app.use("/api/user", userRoute)
 
 app.use(errorHandler);
+
+//
+if (process.env.NODE_ENV === "production") {
+
+    // Serve static files
+    app.use(express.static(path.join(__dirname, "../../web/dist")));
+
+    // Handle SPA routes
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../../web/dist/index.html"));
+    });
+}
+
 export default app;
 

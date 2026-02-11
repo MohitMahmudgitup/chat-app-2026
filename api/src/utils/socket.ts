@@ -1,9 +1,9 @@
 import { Socket, Server as SocketServer } from "socket.io";
 import { Server as HttpServer } from "http";
 import { verifyToken } from "@clerk/express";
-import messageModel from "../models/Message";
-import userModel from "../models/User";
-import chatModel from "../models/Chat";
+import messageModel from "../models/Message.ts";
+import userModel from "../models/User.ts";
+import chatModel from "../models/Chat.ts";
 
 
 // store online users in memory : userId -> socketId
