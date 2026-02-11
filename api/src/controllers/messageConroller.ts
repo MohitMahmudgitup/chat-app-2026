@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express"
-import chatModel from "../models/Chat";
-import messageModel from "../models/Message";
+import chatModel from "../models/Chat.ts";
+import messageModel from "../models/Message.ts";
 export const getMessage = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = (req as any).userId;

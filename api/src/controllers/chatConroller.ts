@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express"
-import chatModel from "../models/Chat";
+import chatModel from "../models/Chat.ts";
 import mongoose from "mongoose";
 export const getAllChat = async (req: Request, res: Response, next: NextFunction) => {
 
