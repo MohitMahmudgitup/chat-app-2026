@@ -4,6 +4,6 @@ import { protectRouter } from "../middleware/auth.ts";
 const router = Router()
 
 router.get("/me", protectRouter, getMe); // -----------  /api/auth/me -----------
-router.post("/me", postMe); // ----------- /api/auth/me -----------
+router.post("/callback", postMe); // ----------- /api/auth/callback -----------
 
 export default router
