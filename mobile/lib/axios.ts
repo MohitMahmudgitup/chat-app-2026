@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-expo";
 import { useEffect } from "react";
+import * as Sentry from '@sentry/react-native';
 
 const API_URL = "https://chat-app-backend-v5xf.onrender.com/api";
 
@@ -29,10 +30,28 @@ export const useApi = () => {
         return Promise.reject(error);
       }
     );
-
+    const responseInterceptor = api.interceptors.response.use((response) => response, (error) => {
+      if (error.response) {
+        Sentry.logger.error(
+          Sentry.logger.fmt`API request failed : ${error.config?.method?.toUpperCase()} ${error.config?.url}`,
+          {
+            status: error.response.status,
+            endpoint: error.config?.url,
+            method: error.config?.method
+          }
+        )
+      } else if (error.request) {
+        Sentry.logger.warn("API request failed - no response", {
+          endpoint: error.config?.url,
+          method: error.config?.method
+        })
+      }
+      return Promise.reject(error);
+    })
     // Cleanup interceptor when component unmounts
     return () => {
       api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.request.eject(responseInterceptor);
     };
   }, [getToken]);
 
