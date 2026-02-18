@@ -19,7 +19,7 @@ app.use(clerkMiddleware())
 
 //------------ router ------------
 app.use("/api/auth", authRoute)
-app.use("/api/chat", chatRoute)
+app.use("/api/chats", chatRoute)
 app.use("/api/message", messageRoute)
 app.use("/api/user", userRoute)
 
