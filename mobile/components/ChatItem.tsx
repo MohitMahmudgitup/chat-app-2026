@@ -1,24 +1,25 @@
 import { View, Text, Pressable } from 'react-native'
 import { Image } from "expo-image"
 import React from 'react'
-import {formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 
 const ChatItem = ({ chat, onPress }: any) => {
-    const participant = chat.participant;
-    const isOnline = true;
-    const isTyping = false;
-    const hasUnread = false;
-    return (
-        <Pressable className='flex-row items-center py-3 active:order-70' onPress={onPress}>
-            {/* avatar & online indicator */}
-            <View className="relative">
-                <Image source={participant.avatar} style={{ width: 56, height: 56, borderRadius: 999 }} />
-                {isOnline && (
-                    <View className="absolute bottom-0 right-0 size-4 bg-green-500 rounded-full border-[3px] border-surface" />
-                )}
-            </View>
-            {/* chat info */}
-             {/* chat info */}
+  const participant = chat.participant;
+  const isOnline = true;
+  const isTyping = false;
+  const hasUnread = false;
+  return (
+    <Pressable className='flex-row items-center py-3 active:order-70' onPress={onPress}>
+
+      {/* avatar & online indicator */}
+      <View className="relative">
+        <Image source={participant.avatar} style={{ width: 56, height: 56, borderRadius: 999 }} />
+        {isOnline && (
+          <View className="absolute bottom-0 right-0 size-4 bg-green-500 rounded-full border-[3px] border-surface" />
+        )}
+      </View>
+
+      {/* chat info */}
       <View className="flex-1 ml-4">
         <View className="flex-row items-center justify-between">
           <Text
@@ -26,32 +27,23 @@ const ChatItem = ({ chat, onPress }: any) => {
           >
             {participant.name}
           </Text>
-
           <View className="flex-row items-center gap-2">
             {hasUnread && <View className="w-2.5 h-2.5 bg-primary rounded-full" />}
             <Text className="text-xs text-subtle-foreground">
-              {chat.lastMessageAt
-                ? formatDistanceToNow(new Date(chat.lastMessageAt), { addSuffix: false })
-                : ""}
+              {chat.lastMessageAt ? formatDistanceToNow(new Date(chat.lastMessageAt), { addSuffix: false }) : ""}
             </Text>
           </View>
         </View>
-
         <View className="flex-row items-center justify-between mt-1">
-          {isTyping ? (
-            <Text className="text-sm text-primary italic">typing...</Text>
-          ) : (
-            <Text
-              className={`text-sm flex-1 mr-3 ${hasUnread ? "text-foreground font-medium" : "text-subtle-foreground"}`}
-              numberOfLines={1}
-            >
+          {isTyping ? (<Text className="text-sm text-primary italic">typing...</Text>) : (
+            <Text className={`text-sm flex-1 mr-3 ${hasUnread ? "text-foreground font-medium" : "text-subtle-foreground"}`} numberOfLines={1} >
               {chat.lastMessage?.text || "No messages yet"}
             </Text>
           )}
         </View>
       </View>
-        </Pressable>
-    )
+    </Pressable>
+  )
 }
 
 export default ChatItem

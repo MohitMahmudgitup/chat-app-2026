@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useChats } from '@/hook/useChats';
 import { Ionicons } from '@expo/vector-icons';
 import ChatItem from '@/components/ChatItem';
+import { Chat } from '@/types';
 
 function ChatsTab() {
   const router = useRouter();
@@ -24,7 +25,19 @@ function ChatsTab() {
   //   )
   // }
 
-  const handleChatPress = (item: any) => { }
+  const handleChatPress = (chat: Chat) => { 
+
+    router.push({
+      pathname : "/chat/[id]",
+      params : {
+        id : chat._id,
+        participantId:chat.participant._id,
+        name :  chat.participant.name,
+        avatar :  chat.participant.avatar
+      }
+    })
+
+  }
 
   return (
     <View className='flex-1 bg-surface'>
