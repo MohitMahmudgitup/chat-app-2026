@@ -9,7 +9,10 @@ const { width, height } = Dimensions.get("window")
 
 const AuthScreen = () => {
   const { handleSocialAuth, loadingStrategy } = useAuthSocial()
+
   return (
+    // Todo animation ords
+    
     <View className='flex-1 bg-surface-dark'>
       <TopSection />
       <CenterSection />
