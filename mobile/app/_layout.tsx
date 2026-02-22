@@ -3,7 +3,6 @@ import "../global.css"
 import {
   QueryClient,
   QueryClientProvider,
-  useQuery,
 } from '@tanstack/react-query'
 import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
@@ -40,6 +39,7 @@ export default Sentry.wrap(function RootLayout() {
         <Stack screenOptions={{ headerShown: false , contentStyle : {backgroundColor : "#0d0d0f"} }}>
           <Stack.Screen name="(auth)" options={{ animation: "fade" }} />
           <Stack.Screen name="(tabs)" options={{ animation: "fade" }} />
+          <Stack.Screen name="new-chat" options={{ animation: "slide_from_bottom" , presentation : "modal" , gestureEnabled : true }}  />
         </Stack>
       </QueryClientProvider>
     </ClerkProvider>
