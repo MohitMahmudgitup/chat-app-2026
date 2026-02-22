@@ -1,5 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator, FlatList, Pressable } from 'react-native';
-import * as Sentry from "@sentry/react-native"
+import { View, Text, FlatList, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useChats } from '@/hook/useChats';
 import { Ionicons } from '@expo/vector-icons';
