@@ -1,5 +1,5 @@
 import { useApi } from "@/lib/axios";
-import type {Chat} from "@/types"
+import type { UsersResponse } from "@/types"
 import { useQuery } from "@tanstack/react-query";
 
 export const useUsers = ()=>{
@@ -7,8 +7,8 @@ export const useUsers = ()=>{
     return useQuery({
         queryKey:["users"],
         queryFn: async() =>{
-            const {data} = await apiWithAuth<{users : Chat["participant"][]}>({method : "GET" , url : "/users"})
-            return data.users;
+            const {data} = await apiWithAuth<UsersResponse>({method : "GET" , url : "/user/alluser"})
+            return  data?.data|| [];
         }
     })
 }

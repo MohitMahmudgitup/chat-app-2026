@@ -1,6 +1,7 @@
 import mongoose, { Schema, type Document } from "mongoose";
 
 interface IChat extends Document {
+    isGroupChat: boolean;
     participants: mongoose.Types.ObjectId[];
     lastMessage?: mongoose.Types.ObjectId;
     lastMessageAt?: Date;
@@ -9,6 +10,10 @@ interface IChat extends Document {
 }
 
 const chatSchema = new Schema<IChat>({
+    isGroupChat: {
+        type: Boolean,
+        default: false
+    },
     participants: [
         {
             type: Schema.Types.ObjectId,

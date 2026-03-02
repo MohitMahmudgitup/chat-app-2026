@@ -4,6 +4,11 @@ export interface User {
   email: string;
   avatar: string;
 }
+export interface UsersResponse {
+  data: User[];
+  success: boolean;
+}
+
 
 export interface MessageSender {
   _id: string;
