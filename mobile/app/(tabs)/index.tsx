@@ -11,6 +11,7 @@ import NoChatsYet from '@/components/Chats/NoChatsYet';
 function ChatsTab() {
   const router = useRouter();
   const { data: chats, isLoading, error, refetch } = useChats();
+  console.log("chats data:", chats);
   if (isLoading) {
     return <Loading refetch={refetch}/>
   }

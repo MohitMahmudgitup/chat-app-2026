@@ -3,7 +3,7 @@ import React from 'react'
 
 const ChatDetailScreen = () => {
   return (
-    <View>
+    <View className='bg-white flex-1 justify-center items-center'>
       <Text>ChatDetailScreen</Text>
     </View>
   )

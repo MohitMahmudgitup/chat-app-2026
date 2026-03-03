@@ -40,3 +40,8 @@ export interface Chat {
   lastMessageAt: string;
   createdAt: string;
 }
+
+export interface ChatsResponse {
+  chats: Chat[];
+  success: boolean;
+}

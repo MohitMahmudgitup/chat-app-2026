@@ -1,44 +1,80 @@
 import { View, Text, Pressable } from 'react-native'
 import { Image } from "expo-image"
 import React from 'react'
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 
 const ChatItem = ({ chat, onPress }: any) => {
   const participant = chat.participant;
   const isOnline = true;
   const isTyping = false;
-  const hasUnread = false;
-  return (
-    <Pressable className='flex-row items-center py-3 active:order-70' onPress={onPress}>
+  const hasUnread = chat.unreadCount > 0;
 
-      {/* avatar & online indicator */}
+  return (
+    <Pressable
+      onPress={onPress}
+      className="flex-row items-center  py-3 bg-background active:opacity-70"
+    >
+      {/* Avatar */}
       <View className="relative">
-        <Image source={participant.avatar} style={{ width: 56, height: 56, borderRadius: 999 }} />
+        <Image
+          source={{ uri: participant.avatar }}
+          contentFit="cover"
+          style={{ width: 50, height: 50, borderRadius: 999 }}
+        />
+
         {isOnline && (
-          <View className="absolute bottom-0 right-0 size-4 bg-green-500 rounded-full border-[3px] border-surface" />
+          <View className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-background" />
         )}
       </View>
 
-      {/* chat info */}
-      <View className="flex-1 ml-4">
-        <View className="flex-row items-center justify-between">
+      {/* Chat Info */}
+      <View className="flex-1 ml-4 ">
+        {/* Top Row */}
+        <View className="flex-row justify-between items-center">
           <Text
-            className={`text-base font-medium ${hasUnread ? "text-primary" : "text-foreground"}`}
+            className={`text-lg ${hasUnread ? "font-semibold text-foreground" : "font-medium text-foreground"
+              }`}
           >
-            {participant.name}
+            {participant.name.length > 20
+              ? participant.name.slice(0, 22) + "..."
+              : participant.name}
           </Text>
-          <View className="flex-row items-center gap-2">
-            {hasUnread && <View className="w-2.5 h-2.5 bg-primary rounded-full" />}
-            <Text className="text-xs text-subtle-foreground">
-              {chat.lastMessageAt ? formatDistanceToNow(new Date(chat.lastMessageAt), { addSuffix: false }) : ""}
-            </Text>
-          </View>
+
+          <Text
+            className={`text-xs ${hasUnread ? "text-primary font-semibold" : "text-subtle-foreground"
+              }`}
+          >
+            {chat.lastMessageAt
+              ? formatDistanceToNowStrict(new Date(chat.lastMessageAt))
+              : ""}
+          </Text>
         </View>
+
+        {/* Bottom Row */}
         <View className="flex-row items-center justify-between mt-1">
-          {isTyping ? (<Text className="text-sm text-primary italic">typing...</Text>) : (
-            <Text className={`text-sm flex-1 mr-3 ${hasUnread ? "text-foreground font-medium" : "text-subtle-foreground"}`} numberOfLines={1} >
-              {chat.lastMessage?.text || "No messages yet"}
+          {isTyping ? (
+            <Text className="text-sm text-primary italic">
+              Typing...
             </Text>
+          ) : (
+            <Text
+              numberOfLines={1}
+              className={`text-sm flex-1 ${hasUnread
+                  ? "text-foreground font-medium"
+                  : "text-subtle-foreground"
+                }`}
+            >
+              {chat.lastMessage?.text || "Start conversation"}
+            </Text>
+          )}
+
+          {/* Unread Count Badge */}
+          {hasUnread && (
+            <View className="ml-2 min-w-[20px] h-5 px-1.5 bg-primary rounded-full items-center justify-center">
+              <Text className="text-[11px] text-white font-semibold">
+                {chat.unreadCount}
+              </Text>
+            </View>
           )}
         </View>
       </View>
